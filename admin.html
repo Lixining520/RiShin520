@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存战争 · 管理后台</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--green:#3fb950;--green-d:#238636;--txt:#e6edf3;--sub:#8b949e;--accent:#58a6ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding:20px}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{color:var(--sub);font-size:13px;margin-bottom:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+  .card h3{font-size:15px;margin-bottom:12px}
+  input{background:#0d1117;border:1px solid var(--line);color:var(--txt);padding:11px;border-radius:8px;font-size:14px;outline:none}
+  input:focus{border-color:var(--accent)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{background:var(--green-d);color:#fff;border:none;padding:11px 16px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600}
+  .btn:hover{background:var(--green)}
+  .btn.sec{background:#21262d;border:1px solid var(--line)}
+  .out{margin-top:12px;background:#0d1117;border:1px solid var(--line);border-radius:8px;padding:12px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;word-break:break-all;max-height:240px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>生存战争 · 管理后台</h1>
+  <p class="sub">生成卡密（纯前端版）</p>
+  <div class="card">
+    <h3>生成卡密</h3>
+    <div class="row">
+      <input id="prefix" placeholder="前缀 如 LIXIN" style="width:140px">
+      <input id="count" type="number" value="10" min="1" max="500" style="width:90px">
+      <button class="btn" id="gen">生成</button>
+    </div>
+    <div class="out" id="genOut"></div>
+  </div>
+  <div class="card">
+    <h3>导出 codes.txt</h3>
+    <p class="sub">复制下面内容，粘进服务端 plugins/CardKey/codes.txt</p>
+    <div class="out" id="exportOut"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn sec" id="copy">复制</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>已生成列表</h3>
+    <table id="tbl"><thead><tr><th>卡密</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let local=[];
+function rnd(n){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+$('gen').onclick=()=>{
+  const prefix=$('prefix').value.trim()||'LIXIN';
+  const count=parseInt($('count').value)||1;
+  for(let i=0;i<count;i++)local.push(prefix+'-'+rnd(12));
+  render();
+};
+function render(){
+  const tb=$('tbl').querySelector('tbody');tb.innerHTML='';
+  local.forEach(c=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+c+'</td>';tb.appendChild(tr);});
+  $('exportOut').textContent=local.join('\\n');
+}
+$('copy').onclick=()=>{navigator.clipboard.writeText($('exportOut').textContent);alert('已复制，去粘进 codes.txt');};
+render();
+</script>
+</body>
+</html>
