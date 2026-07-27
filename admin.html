@@ -39,8 +39,8 @@
     <div class="out" id="genOut"></div>
   </div>
   <div class="card">
-    <h3>导出 codes.txt</h3>
-    <p class="sub">复制下面内容，粘进服务端 plugins/CardKey/codes.txt</p>
+    <h3>导出 VALID_KEYS（粘进 player.html）</h3>
+    <p class="sub">把下面的内容整段复制，覆盖 player.html 里的 VALID_KEYS 数组</p>
     <div class="out" id="exportOut"></div>
     <div class="row" style="margin-top:10px">
       <button class="btn sec" id="copy">复制</button>
@@ -52,21 +52,24 @@
   </div>
 </div>
 <script>
-const $=id=>document.getElementById(id);
-let local=[];
-function rnd(n){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
-$('gen').onclick=()=>{
-  const prefix=$('prefix').value.trim()||'LIXIN';
-  const count=parseInt($('count').value)||1;
-  for(let i=0;i<count;i++)local.push(prefix+'-'+rnd(12));
+var $=function(id){return document.getElementById(id);};
+var local=[];
+function rnd(n){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var s='';for(var i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+$("gen").onclick=function(){
+  var prefix=$("prefix").value.trim()||"LIXIN";
+  var count=parseInt($("count").value)||1;
+  for(var i=0;i<count;i++)local.push(prefix+"-"+rnd(12));
   render();
 };
 function render(){
-  const tb=$('tbl').querySelector('tbody');tb.innerHTML='';
-  local.forEach(c=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+c+'</td>';tb.appendChild(tr);});
-  $('exportOut').textContent=local.join('\\n');
+  var tb=$("tbl").querySelector("tbody");tb.innerHTML="";
+  local.forEach(function(c){var tr=document.createElement("tr");tr.innerHTML="<td>"+c+"</td>";tb.appendChild(tr);});
+  var arr="var VALID_KEYS = [\\n";
+  local.forEach(function(c){arr+='  "'+c+'",\\n';});
+  arr+="];";
+  $("exportOut").textContent=arr;
 }
-$('copy').onclick=()=>{navigator.clipboard.writeText($('exportOut').textContent);alert('已复制，去粘进 codes.txt');};
+$("copy").onclick=function(){navigator.clipboard.writeText($("exportOut").textContent);alert("已复制，去覆盖 player.html 的 VALID_KEYS");};
 render();
 </script>
 </body>
