@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存战争 · 卡密领取</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--green:#3fb950;--green-d:#238636;--txt:#e6edf3;--sub:#8b949e;--accent:#58a6ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(circle at 50% -20%,#1b2735,#0d1117 60%);color:var(--txt);min-height:100vh;padding:20px;display:flex;align-items:center;justify-content:center}
+  .box{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px}
+  .logo{font-size:40px;text-align:center;margin-bottom:6px}
+  h2{font-size:20px;text-align:center;margin-bottom:16px}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .num{flex:0 0 26px;height:26px;background:var(--green-d);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .step .t{font-size:14px;line-height:1.7}
+  .step .t b{color:var(--accent)}
+  .code{margin-top:6px;background:#0d1117;border:1px dashed var(--line);border-radius:8px;padding:10px;font-family:Consolas,monospace;font-size:13px;word-break:break-all}
+  .note{font-size:12px;color:var(--sub);margin-top:18px;text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">⚔️</div>
+  <h2>生存战争 · 卡密领取</h2>
+  <div class="step"><div class="num">1</div><div class="t">卡密已由管理员私发给你，请妥善保管，<b>一人一码</b>。</div></div>
+  <div class="step"><div class="num">2</div><div class="t">启动游戏，连接服务器：<div class="code" id="ip">play.example.com:25565</div></div></div>
+  <div class="step"><div class="num">3</div><div class="t">进入游戏后，在聊天框输入：<div class="code">/login 你的卡密</div>验证通过后即可正常游玩。</div></div>
+  <div class="step"><div class="num">4</div><div class="t">若提示<b>卡密错误</b>，请检查大小写或联系管理员重新发放。</div></div>
+  <p class="note">本页面仅用于发放与说明，验证在服务端完成。</p>
+</div>
+<script>
+  document.getElementById('ip').textContent = 'play.example.com:25565';
+</script>
+</body>
+</html>
