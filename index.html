@@ -11,6 +11,15 @@
   .box{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px}
   .logo{font-size:40px;text-align:center;margin-bottom:6px}
   h2{font-size:20px;text-align:center;margin-bottom:16px}
+  .row{display:flex;gap:10px}
+  input{background:#0d1117;border:1px solid var(--line);color:var(--txt);padding:12px;border-radius:8px;font-size:14px;outline:none;flex:1}
+  input:focus{border-color:var(--accent)}
+  .btn{background:var(--green-d);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600}
+  .btn:hover{background:var(--green)}
+  .msg{font-size:13px;margin-top:12px;text-align:center;min-height:18px}
+  .err{color:#f85149}
+  .ok{color:var(--green)}
+  .hidden{display:none}
   .step{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
   .step:last-child{border-bottom:none}
   .num{flex:0 0 26px;height:26px;background:var(--green-d);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
@@ -21,17 +30,45 @@
 </style>
 </head>
 <body>
-<div class="box">
+<div class="box" id="loginBox">
   <div class="logo">⚔️</div>
-  <h2>生存战争 · 卡密领取</h2>
-  <div class="step"><div class="num">1</div><div class="t">卡密已由管理员私发给你，请妥善保管，<b>一人一码</b>。</div></div>
-  <div class="step"><div class="num">2</div><div class="t">启动游戏，连接服务器：<div class="code" id="ip">play.example.com:25565</div></div></div>
+  <h2>生存战争 · 卡密验证</h2>
+  <div class="row">
+    <input id="keyInput" placeholder="请输入卡密" autocomplete="off">
+    <button class="btn" id="loginBtn">验证</button>
+  </div>
+  <div class="msg" id="loginMsg"></div>
+</div>
+
+<div class="box hidden" id="infoBox">
+  <div class="logo">⚔️</div>
+  <h2>生存战争 · 进服说明</h2>
+  <div class="step"><div class="num">1</div><div class="t">卡密验证通过，一人一码，请妥善保管。</div></div>
+  <div class="step"><div class="num">2</div><div class="t">启动游戏，连接服务器：<div class="code" id="ip">ovo.fucku.top:28887</div></div></div>
   <div class="step"><div class="num">3</div><div class="t">进入游戏后，在聊天框输入：<div class="code">/login 你的卡密</div>验证通过后即可正常游玩。</div></div>
   <div class="step"><div class="num">4</div><div class="t">若提示<b>卡密错误</b>，请检查大小写或联系管理员重新发放。</div></div>
   <p class="note">本页面仅用于发放与说明，验证在服务端完成。</p>
 </div>
+
 <script>
-  document.getElementById('ip').textContent = 'ovo.fucku.top:28887';
+var VALID_KEYS = [
+  "LIXIN-ABCDEFGH1234",
+  "LIXIN-BCDEFGHI2345"
+];
+var $ = function(id){ return document.getElementById(id); };
+function check(){
+  var v = $("keyInput").value.trim().toUpperCase();
+  if(!v){ $("loginMsg").className="msg err"; $("loginMsg").textContent="请输入卡密"; return; }
+  if(VALID_KEYS.indexOf(v) >= 0){
+    $("loginBox").classList.add("hidden");
+    $("infoBox").classList.remove("hidden");
+  } else {
+    $("loginMsg").className="msg err";
+    $("loginMsg").textContent="卡密错误，请重试";
+  }
+}
+$("loginBtn").onclick = check;
+$("keyInput").addEventListener("keydown", function(e){ if(e.key==="Enter") check(); });
 </script>
 </body>
 </html>
