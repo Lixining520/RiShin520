@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">悬浮助手</string>
+    <string name="btn_start">启动悬浮窗</string>
+    <string name="btn_stop">关闭悬浮窗</string>
+    <string name="tag_game">游戏</string>
+    <string name="app_icon">应用图标</string>
+</resources>
