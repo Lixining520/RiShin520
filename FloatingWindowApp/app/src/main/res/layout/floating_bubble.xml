@@ -33,4 +33,22 @@
         android:text="帧率 --"
         android:textSize="14sp"
         android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/tvCpu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="CPU --"
+        android:textSize="14sp"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/tvMemory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="内存 --"
+        android:textSize="14sp"
+        android:textColor="#333333" />
 </LinearLayout>

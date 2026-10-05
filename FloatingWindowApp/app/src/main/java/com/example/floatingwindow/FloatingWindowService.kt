@@ -1,5 +1,6 @@
 package com.example.floatingwindow
 
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -57,6 +58,8 @@ class FloatingWindowService : Service() {
     private var tvTime: TextView? = null
     private var tvBattery: TextView? = null
     private var tvFps: TextView? = null
+    private var tvCpu: TextView? = null
+    private var tvMemory: TextView? = null
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
@@ -77,9 +80,15 @@ class FloatingWindowService : Service() {
     private var currentFps = 0
     private var fpsRegistered = false
 
+    // CPU（读取 /proc/stat 做差值计算）
+    private var prevCpuTotal = 0L
+    private var prevCpuIdle = 0L
+
     private val timeRunnable = object : Runnable {
         override fun run() {
             updateTime()
+            updateCpu()
+            updateMemory()
             mainHandler.postDelayed(this, 500)
         }
     }
@@ -141,6 +150,8 @@ class FloatingWindowService : Service() {
         tvTime = bubble.findViewById(R.id.tvTime)
         tvBattery = bubble.findViewById(R.id.tvBattery)
         tvFps = bubble.findViewById(R.id.tvFps)
+        tvCpu = bubble.findViewById(R.id.tvCpu)
+        tvMemory = bubble.findViewById(R.id.tvMemory)
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -283,6 +294,54 @@ class FloatingWindowService : Service() {
         } else {
             "电量 --"
         }
+    }
+
+    private fun updateCpu() {
+        val usage = readCpuUsage()
+        tvCpu?.text = if (usage >= 0f) {
+            "CPU ${usage.toInt()}%"
+        } else {
+            "CPU --"
+        }
+    }
+
+    // 读取 /proc/stat 第一行 cpu 行，通过两次采样差值计算整体 CPU 占用率
+    private fun readCpuUsage(): Float {
+        return try {
+            val reader = java.io.BufferedReader(java.io.FileReader("/proc/stat"))
+            val line = reader.readLine()
+            reader.close()
+            val parts = line.split(Regex("\\s+")).filter { it.isNotEmpty() }
+            if (parts.size < 5) return -1f
+            val user = parts[1].toLong()
+            val nice = parts[2].toLong()
+            val system = parts[3].toLong()
+            val idle = parts[4].toLong()
+            val iowait = parts.getOrNull(5)?.toLong() ?: 0L
+            val irq = parts.getOrNull(6)?.toLong() ?: 0L
+            val softirq = parts.getOrNull(7)?.toLong() ?: 0L
+            val steal = parts.getOrNull(8)?.toLong() ?: 0L
+            val idleAll = idle + iowait
+            val total = user + nice + system + idleAll + irq + softirq + steal
+            val diffTotal = total - prevCpuTotal
+            val diffIdle = idleAll - prevCpuIdle
+            prevCpuTotal = total
+            prevCpuIdle = idleAll
+            if (diffTotal <= 0) return -1f
+            (diffTotal - diffIdle) * 100f / diffTotal
+        } catch (_: Exception) {
+            -1f
+        }
+    }
+
+    private fun updateMemory() {
+        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val mi = ActivityManager.MemoryInfo()
+        am.getMemoryInfo(mi)
+        val total = mi.totalMem
+        val used = total - mi.availMem
+        val pct = if (total > 0) used * 100 / total else 0
+        tvMemory?.text = "内存 $pct%"
     }
 
     private fun startFps() {
